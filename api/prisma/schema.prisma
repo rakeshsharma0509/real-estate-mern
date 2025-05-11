@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  price      Int
+  images     String[]
+  address    String
+  city       String
+  bedroom    Int
+  bathroom   Int
+  latitude   String
+  longitude  String
+  type       Type
+  property   Property
+  createdAt  DateTime    @default(now())
+  user       User        @relation(fields: [userId], references: [id])
+  userId     String      @db.ObjectId
+  postDetail PostDetail?
+  savedPosts SavedPost[]
+}
+
+// user id store kri 
+// now user store kiya jisko relate kiya using the userId jo just uske niche banai hai.
+//mongodb mein sirf user id save hogi jo refer kregi id in user collection.
+
+//user defined type for database
+enum Type {
+  buy
+  rent
+}
+
+//user defined type for database
+enum Property {
+  apartment
+  house
+  condo
+  land
+}
+
+model PostDetail {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  desc       String
+  utilities  String?
+  pet        String?
+  income     String?
+  size       Int?
+  school     Int?
+  bus        Int?
+  restaurant Int?
+  post       Post    @relation(fields: [postId], references: [id])
+  postId     String  @unique @db.ObjectId
+}
+
+model SavedPost {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id],onDelete:Cascade)
+  post      Post     @relation(fields: [postId], references: [id],onDelete:Cascade)
+  userId    String   @unique @db.ObjectId
+  postId    String   @unique @db.ObjectId
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+}
+
+// @id - This tells Prisma that the id field is the primary key. 
+// @default(auto())- his means Prisma will automatically create a unique value for the id field whenever you add a new record. You don’t have to manually set it.
+//@map("_id"):- his tells Prisma to use the name _id for this field in the actual database. monogo db jo gnerate krega us se map kr dia hai isne
+//@db.ObjectId-- This specifies that in the database (MongoDB in this case), the id field will be stored as an ObjectId.
+// as an object ki tarah store in database
+
+model User {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  email      String      @unique
+  username   String      @unique
+  password   String
+  avatar     String? // ? means can be empty
+  createdAt  DateTime    @default(now())
+  posts      Post[]
+  savedPosts SavedPost[]
+  chats      Chat[]      @relation(fields: [chatIDs], references: [id])
+  chatIDs    String[]    @db.ObjectId
+}
+
+model Chat {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  users     User[]    @relation(fields: [userIDs], references: [id])
+  userIDs   String[]  @db.ObjectId // it will store id as string of sender and receiver
+  createdAt DateTime  @default(now())
+  seenBy    String[]  @db.ObjectId
+  messages  Message[] // ye message collection ke doucment array store kregi yaani har message ko kregi // har naye message ke liye add hogi chat mein.
+  lastMessage String? // ye last message updated rakhega har wqt
+}
+
+
+model Message {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  text      String
+  userId    String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  chatId    String   @db.ObjectId //stores the chat id that this message belong to which chat
+  createdAt DateTime @default(now())
+}

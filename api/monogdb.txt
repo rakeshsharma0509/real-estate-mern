@@ -1,0 +1,7 @@
+DATABASE_URL="mongodb+srv://rakesh:1234567@rakesh@cluster0.5fjie7b.mongodb.net/estate?retryWrites=true&w=majority&appName=Cluster0"
+
+
+user: rakesh
+password=1234567@rakesh
+
+table name:estate
