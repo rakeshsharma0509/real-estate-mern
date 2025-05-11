@@ -1,0 +1,78 @@
+# Full Stack Estate Platform
+
+A full-stack real estate application designed for modern, scalable deployment. It includes a robust API, a responsive frontend, and real-time communication capabilities.
+
+---
+
+## 🌟 Features
+
+- User authentication and authorization
+- Property listing and filtering
+- Real-time notifications via WebSocket
+- RESTful API with Prisma and PostgreSQL
+- React-based frontend with Vite for fast development
+
+---
+
+## 🧰 Tech Stack
+
+### Frontend
+- Vite
+- React (likely from `vite.config.js` and src structure)
+- TailwindCSS (if applicable)
+- Axios
+
+### Backend
+- Node.js
+- Express.js
+- Prisma ORM
+- PostgreSQL (expected from Prisma)
+
+### Real-Time
+- WebSocket (socket.io or native ws in the `socket/` directory)
+
+---
+
+## 📁 Directory Structure
+full-stack-estate-main/
+├── api/ # Backend API with Express and Prisma
+├── client/ # Frontend with Vite and React
+└── socket/ # WebSocket server for real-time functionality
+
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher recommended)
+- PostgreSQL (ensure a database is available for Prisma)
+- pnpm or npm
+
+### 1. Clone the repository
+
+```bash
+git clone https://your-repo-url/full-stack-estate-main.git
+cd full-stack-estate-main
+
+2. Backend Setup (API)
+cd api
+npm install
+# Configure your database connection in prisma/schema.prisma
+npx prisma generate
+npx prisma migrate dev --name init
+npm run dev
+
+3. Frontend Setup (Client)
+cd ../client
+npm install
+npm run dev
+
+4. WebSocket Server Setup
+cd ../socket
+npm install
+node app.js
+
+
+
